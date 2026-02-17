@@ -108,7 +108,21 @@ function saveData(data) {
 // 地图功能
 function initMap() {
     const locationsGrid = document.getElementById('locationsGrid');
-    if (!locationsGrid) return;
+    const mapContainer = document.getElementById('map');
+    
+    // 西安财经大学坐标 (近似中心位置)
+    const campusCenter = [34.1489, 108.9089];
+    
+    // 各地点的坐标 (需要根据实际位置调整)
+    const areaCoords = {
+        'library': [34.1510, 108.9100],    // 图书馆
+        'dorm-a': [34.1470, 108.9120],      // 宿舍楼A区
+        'dorm-b': [34.1460, 108.9080],      // 宿舍楼B区
+        'canteen': [34.1450, 108.9060],     // 食堂
+        'playground': [34.1430, 108.9050],   // 操场
+        'teaching': [34.1500, 108.9070],    // 教学楼
+        'garden': [34.1490, 108.9090]       // 花园
+    };
 
     const data = getData();
     const areas = {
@@ -128,39 +142,101 @@ function initMap() {
         'shelter': '🏠'
     };
 
-    locationsGrid.innerHTML = data.locations.map(loc => `
-        <div class="location-card" data-type="${loc.type}">
-            <div class="location-header">
-                <span class="location-type">${icons[loc.type]}</span>
-                <div>
-                    <div class="location-name">${loc.name}</div>
-                    <div class="location-area">${areas[loc.area]}</div>
-                </div>
-            </div>
-            <p class="location-desc">${loc.description}</p>
-            ${loc.features ? `<p class="location-desc">特征：${loc.features}</p>` : ''}
-        </div>
-    `).join('');
+    // 自定义标记图标
+    const markerIcons = {
+        'cat': L.divIcon({ className: 'map-marker cat', html: '🐱', iconSize: [40, 40], iconAnchor: [20, 20] }),
+        'dog': L.divIcon({ className: 'map-marker dog', html: '🐕', iconSize: [40, 40], iconAnchor: [20, 20] }),
+        'food': L.divIcon({ className: 'map-marker food', html: '🍚', iconSize: [40, 40], iconAnchor: [20, 20] }),
+        'shelter': L.divIcon({ className: 'map-marker shelter', html: '🏠', iconSize: [40, 40], iconAnchor: [20, 20] })
+    };
 
-    // 筛选功能
-    const filterBtns = document.querySelectorAll('.map-filters .filter-btn');
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            const filter = this.dataset.filter;
-            const cards = document.querySelectorAll('.location-card');
-            
-            cards.forEach(card => {
-                if (filter === 'all' || card.dataset.type === filter) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+    // 初始化 Leaflet 地图
+    if (mapContainer) {
+        // 清除旧的地图容器内容
+        mapContainer.innerHTML = '';
+        
+        // 创建地图
+        const map = L.map('map').setView(campusCenter, 16);
+        
+        // 添加 OpenStreetMap 图层
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // 添加标记点
+        const markers = [];
+        data.locations.forEach(loc => {
+            const coords = areaCoords[loc.area] || campusCenter;
+            const marker = L.marker(coords, { icon: markerIcons[loc.type] })
+                .addTo(map)
+                .bindPopup(`
+                    <div style="text-align: center;">
+                        <strong>${icons[loc.type]} ${loc.name}</strong><br>
+                        <small>${areas[loc.area]}</small><br>
+                        <p style="margin: 5px 0;">${loc.description}</p>
+                        ${loc.features ? `<small>特征: ${loc.features}</small>` : ''}
+                    </div>
+                `);
+            markers.push({ marker, type: loc.type });
+        });
+
+        // 筛选功能
+        const filterBtns = document.querySelectorAll('.map-filters .filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                
+                markers.forEach(item => {
+                    if (filter === 'all' || item.type === filter) {
+                        item.marker.setVisible(true);
+                    } else {
+                        item.marker.setVisible(false);
+                    }
+                });
             });
         });
-    });
+    }
+
+    // 地点列表
+    if (locationsGrid) {
+        locationsGrid.innerHTML = data.locations.map(loc => `
+            <div class="location-card" data-type="${loc.type}">
+                <div class="location-header">
+                    <span class="location-type">${icons[loc.type]}</span>
+                    <div>
+                        <div class="location-name">${loc.name}</div>
+                        <div class="location-area">${areas[loc.area]}</div>
+                    </div>
+                </div>
+                <p class="location-desc">${loc.description}</p>
+                ${loc.features ? `<p class="location-desc">特征：${loc.features}</p>` : ''}
+            </div>
+        `).join('');
+
+        // 列表筛选功能
+        const listFilterBtns = document.querySelectorAll('.locations-section .map-filters .filter-btn');
+        listFilterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                listFilterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                const cards = document.querySelectorAll('.location-card');
+                
+                cards.forEach(card => {
+                    if (filter === 'all' || card.dataset.type === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    }
 
     // 添加地点表单
     const addForm = document.getElementById('addLocationForm');
