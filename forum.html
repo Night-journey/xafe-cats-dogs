@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论坛 - 西财流浪猫狗</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🐾</span>
+                <span class="logo-text">西财流浪动物</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="map.html">校园地图</a></li>
+                <li><a href="forum.html" class="active">论坛</a></li>
+                <li><a href="entrust.html">委托</a></li>
+                <li><a href="adoption.html">领养</a></li>
+                <li><a href="rescue.html">救助知识</a></li>
+                <li><a href="about.html">关于我们</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">首页</a>
+        <a href="map.html">校园地图</a>
+        <a href="forum.html">论坛</a>
+        <a href="entrust.html">委托</a>
+        <a href="adoption.html">领养</a>
+        <a href="rescue.html">救助知识</a>
+        <a href="about.html">关于我们</a>
+    </div>
+
+    <main class="page-content">
+        <div class="container">
+            <div class="forum-header">
+                <div>
+                    <h1 class="page-title">💬 论坛</h1>
+                    <p class="page-desc">分享、交流救助经验，晒晒校园里的毛孩子</p>
+                </div>
+                <button class="btn btn-primary" id="newPostBtn">➕ 发布新帖</button>
+            </div>
+
+            <!-- 发帖弹窗 -->
+            <div class="modal" id="postModal">
+                <div class="modal-content">
+                    <span class="modal-close" id="closePostModal">&times;</span>
+                    <h2>发布新帖</h2>
+                    <form id="postForm">
+                        <div class="form-group">
+                            <label>标题</label>
+                            <input type="text" name="title" required placeholder="请输入标题">
+                        </div>
+                        <div class="form-group">
+                            <label>分类</label>
+                            <select name="category" required>
+                                <option value="share">📸 晒照分享</option>
+                                <option value="experience">💡 经验交流</option>
+                                <option value="question">❓ 问答求助</option>
+                                <option value="notice">📢 公告通知</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>内容</label>
+                            <textarea name="content" rows="6" required placeholder="分享你的经历..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>标签（用逗号分隔）</label>
+                            <input type="text" name="tags" placeholder="例如：橘猫、喂食、冬天">
+                        </div>
+                        <button type="submit" class="btn btn-primary">发布</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 筛选 -->
+            <div class="forum-filters">
+                <button class="filter-btn active" data-category="all">全部</button>
+                <button class="filter-btn" data-category="share">📸 晒照</button>
+                <button class="filter-btn" data-category="experience">💡 经验</button>
+                <button class="filter-btn" data-category="question">❓ 问答</button>
+                <button class="filter-btn" data-category="notice">📢 公告</button>
+            </div>
+
+            <!-- 帖子列表 -->
+            <div class="forum-posts" id="forumPosts">
+                <!-- 帖子将通过JS生成 -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 西安财经大学流浪动物关爱平台</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initForum();
+        });
+    </script>
+</body>
+</html>

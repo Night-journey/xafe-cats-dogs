@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园地图 - 西财流浪猫狗</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🐾</span>
+                <span class="logo-text">西财流浪动物</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="map.html" class="active">校园地图</a></li>
+                <li><a href="forum.html">论坛</a></li>
+                <li><a href="entrust.html">委托</a></li>
+                <li><a href="adoption.html">领养</a></li>
+                <li><a href="rescue.html">救助知识</a></li>
+                <li><a href="about.html">关于我们</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">首页</a>
+        <a href="map.html">校园地图</a>
+        <a href="forum.html">论坛</a>
+        <a href="entrust.html">委托</a>
+        <a href="adoption.html">领养</a>
+        <a href="rescue.html">救助知识</a>
+        <a href="about.html">关于我们</a>
+    </div>
+
+    <main class="page-content">
+        <div class="container">
+            <h1 class="page-title">🗺️ 校园地图</h1>
+            <p class="page-desc">查看校园内流浪猫狗的出没地点、喂食点和休息区</p>
+            
+            <!-- 筛选器 -->
+            <div class="map-filters">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="cat">🐱 猫咪</button>
+                <button class="filter-btn" data-filter="dog">🐕 狗狗</button>
+                <button class="filter-btn" data-filter="food">🍚 喂食点</button>
+                <button class="filter-btn" data-filter="shelter">🏠 休息区</button>
+            </div>
+
+            <!-- 地图区域 -->
+            <div class="map-container">
+                <div class="map-placeholder">
+                    <div class="map-grid">
+                        <!-- 校园区域标记 -->
+                        <div class="campus-area" id="campusMap">
+                            <!-- 标记点将通过JS生成 -->
+                        </div>
+                    </div>
+                    <div class="map-legend">
+                        <div class="legend-item"><span class="legend-marker cat"></span> 猫咪</div>
+                        <div class="legend-item"><span class="legend-marker dog"></span> 狗狗</div>
+                        <div class="legend-item"><span class="legend-marker food"></span> 喂食点</div>
+                        <div class="legend-item"><span class="legend-marker shelter"></span> 休息区</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 地点列表 -->
+            <div class="locations-section">
+                <h2 class="section-title">📍 地点列表</h2>
+                <div class="locations-grid" id="locationsGrid">
+                    <!-- 地点卡片将通过JS生成 -->
+                </div>
+            </div>
+
+            <!-- 添加新地点 -->
+            <div class="add-location-section">
+                <h2 class="section-title">➕ 添加新地点</h2>
+                <form class="add-location-form" id="addLocationForm">
+                    <div class="form-group">
+                        <label>地点名称</label>
+                        <input type="text" name="name" required placeholder="例如：图书馆后花园">
+                    </div>
+                    <div class="form-group">
+                        <label>类型</label>
+                        <select name="type" required>
+                            <option value="cat">🐱 猫咪出没点</option>
+                            <option value="dog">🐕 狗狗出没点</option>
+                            <option value="food">🍚 喂食点</option>
+                            <option value="shelter">🏠 休息区</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>区域位置</label>
+                        <select name="area" required>
+                            <option value="library">📚 图书馆</option>
+                            <option value="dorm-a">🏢 宿舍楼A区</option>
+                            <option value="dorm-b">🏢 宿舍楼B区</option>
+                            <option value="canteen">🍽️ 食堂</option>
+                            <option value="playground">⚽ 操场</option>
+                            <option value="teaching">🏫 教学楼</option>
+                            <option value="garden">🌸 花园</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>描述</label>
+                        <textarea name="description" rows="3" placeholder="描述这个地点的情况..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>动物特征（可选）</label>
+                        <input type="text" name="features" placeholder="例如：橘猫，性格温顺">
+                    </div>
+                    <button type="submit" class="btn btn-primary">提交地点</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 西安财经大学流浪动物关爱平台</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+        });
+    </script>
+</body>
+</html>

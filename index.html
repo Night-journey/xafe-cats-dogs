@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>西财流浪猫狗 - 西安财经大学流浪动物关爱平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🐾</span>
+                <span class="logo-text">西财流浪动物</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">首页</a></li>
+                <li><a href="map.html">校园地图</a></li>
+                <li><a href="forum.html">论坛</a></li>
+                <li><a href="entrust.html">委托</a></li>
+                <li><a href="adoption.html">领养</a></li>
+                <li><a href="rescue.html">救助知识</a></li>
+                <li><a href="about.html">关于我们</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 移动端菜单 -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">首页</a>
+        <a href="map.html">校园地图</a>
+        <a href="forum.html">论坛</a>
+        <a href="entrust.html">委托</a>
+        <a href="adoption.html">领养</a>
+        <a href="rescue.html">救助知识</a>
+        <a href="about.html">关于我们</a>
+    </div>
+
+    <!-- 英雄区 -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>🐱 西安财经大学流浪动物关爱平台</h1>
+            <p>用爱守护每一个生命，让校园充满温暖</p>
+            <div class="hero-buttons">
+                <a href="map.html" class="btn btn-primary">查看校园地图</a>
+                <a href="entrust.html" class="btn btn-secondary">发布委托</a>
+            </div>
+        </div>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number" id="catCount">0</span>
+                <span class="stat-label">只流浪猫</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="dogCount">0</span>
+                <span class="stat-label">只流浪狗</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="adoptedCount">0</span>
+                <span class="stat-label">已领养</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 快捷功能区 -->
+    <section class="quick-actions">
+        <div class="container">
+            <h2 class="section-title">🐾 快捷入口</h2>
+            <div class="action-grid">
+                <a href="map.html" class="action-card">
+                    <div class="action-icon">🗺️</div>
+                    <h3>校园地图</h3>
+                    <p>查看猫狗出没地点</p>
+                </a>
+                <a href="forum.html" class="action-card">
+                    <div class="action-icon">💬</div>
+                    <h3>论坛</h3>
+                    <p>交流救助经验</p>
+                </a>
+                <a href="entrust.html" class="action-card">
+                    <div class="action-icon">📋</div>
+                    <h3>委托</h3>
+                    <p>发布求助信息</p>
+                </a>
+                <a href="adoption.html" class="action-card">
+                    <div class="action-icon">🏠</div>
+                    <h3>领养</h3>
+                    <p>给毛孩子一个家</p>
+                </a>
+                <a href="rescue.html" class="action-card">
+                    <div class="action-icon">📚</div>
+                    <h3>救助知识</h3>
+                    <p>学习救助技巧</p>
+                </a>
+                <a href="about.html" class="action-card">
+                    <div class="action-icon">❤️</div>
+                    <h3>关于我们</h3>
+                    <p>了解我们团队</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 最近动态 -->
+    <section class="recent-activity">
+        <div class="container">
+            <h2 class="section-title">📰 最近动态</h2>
+            <div class="activity-list" id="activityList">
+                <!-- 动态将通过JS加载 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>关于我们</h4>
+                    <p>西安财经大学流浪动物关爱平台，由师生自发组织，致力于流浪猫狗的救助与关爱。</p>
+                </div>
+                <div class="footer-section">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="map.html">校园地图</a></li>
+                        <li><a href="forum.html">论坛</a></li>
+                        <li><a href="entrust.html">委托</a></li>
+                        <li><a href="adoption.html">领养</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>联系我们</h4>
+                    <p>📧 xafe@animal.com</p>
+                    <p>📱 添加微信: xafe-cats</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 西安财经大学流浪动物关爱平台 | 用爱温暖每一个生命</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/data.js"></script>
+</body>
+</html>

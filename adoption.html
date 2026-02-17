@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>领养 - 西财流浪猫狗</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🐾</span>
+                <span class="logo-text">西财流浪动物</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="map.html">校园地图</a></li>
+                <li><a href="forum.html">论坛</a></li>
+                <li><a href="entrust.html">委托</a></li>
+                <li><a href="adoption.html" class="active">领养</a></li>
+                <li><a href="rescue.html">救助知识</a></li>
+                <li><a href="about.html">关于我们</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">首页</a>
+        <a href="map.html">校园地图</a>
+        <a href="forum.html">论坛</a>
+        <a href="entrust.html">委托</a>
+        <a href="adoption.html">领养</a>
+        <a href="rescue.html">救助知识</a>
+        <a href="about.html">关于我们</a>
+    </div>
+
+    <main class="page-content">
+        <div class="container">
+            <div class="forum-header">
+                <div>
+                    <h1 class="page-title">🏠 领养</h1>
+                    <p class="page-desc">给流浪的毛孩子一个温暖的家</p>
+                </div>
+                <button class="btn btn-primary" id="newAdoptionBtn">➕ 发布领养</button>
+            </div>
+
+            <!-- 发布领养弹窗 -->
+            <div class="modal" id="adoptionModal">
+                <div class="modal-content">
+                    <span class="modal-close" id="closeAdoptionModal">&times;</span>
+                    <h2>发布领养</h2>
+                    <form id="adoptionForm">
+                        <div class="form-group">
+                            <label>动物类型</label>
+                            <select name="type" required>
+                                <option value="cat">🐱 猫咪</option>
+                                <option value="dog">🐕 狗狗</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>名字</label>
+                            <input type="text" name="name" required placeholder="如果有名字请填写">
+                        </div>
+                        <div class="form-group">
+                            <label>年龄</label>
+                            <input type="text" name="age" required placeholder="例如：3个月、一岁半">
+                        </div>
+                        <div class="form-group">
+                            <label>性别</label>
+                            <select name="gender" required>
+                                <option value="unknown">未知</option>
+                                <option value="male">弟弟</option>
+                                <option value="female">妹妹</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>外貌描述</label>
+                            <textarea name="appearance" rows="2" placeholder="毛色、体型、特征"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>性格描述</label>
+                            <textarea name="personality" rows="2" placeholder="温顺、活泼、黏人"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>健康状况</label>
+                            <input type="text" name="health" placeholder="已绝育、已打疫苗、健康">
+                        </div>
+                        <div class="form-group">
+                            <label>所在地</label>
+                            <input type="text" name="location" required placeholder="西安财经大学校内/校外">
+                        </div>
+                        <div class="form-group">
+                            <label>领养要求</label>
+                            <textarea name="requirement" rows="2" placeholder="不离不弃、有独立经济能力等"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>联系方式</label>
+                            <input type="text" name="contact" required placeholder="微信/电话">
+                        </div>
+                        <button type="submit" class="btn btn-primary">发布</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 筛选 -->
+            <div class="forum-filters">
+                <button class="filter-btn active" data-type="all">全部</button>
+                <button class="filter-btn" data-type="cat">🐱 猫咪</button>
+                <button class="filter-btn" data-type="dog">🐕 狗狗</button>
+            </div>
+
+            <!-- 领养列表 -->
+            <div class="adoption-grid" id="adoptionList">
+                <!-- 领养信息将通过JS生成 -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 西安财经大学流浪动物关爱平台</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initAdoption();
+        });
+    </script>
+</body>
+</html>

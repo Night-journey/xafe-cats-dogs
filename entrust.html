@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>委托 - 西财流浪猫狗</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🐾</span>
+                <span class="logo-text">西财流浪动物</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="map.html">校园地图</a></li>
+                <li><a href="forum.html">论坛</a></li>
+                <li><a href="entrust.html" class="active">委托</a></li>
+                <li><a href="adoption.html">领养</a></li>
+                <li><a href="rescue.html">救助知识</a></li>
+                <li><a href="about.html">关于我们</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">首页</a>
+        <a href="map.html">校园地图</a>
+        <a href="forum.html">论坛</a>
+        <a href="entrust.html">委托</a>
+        <a href="adoption.html">领养</a>
+        <a href="rescue.html">救助知识</a>
+        <a href="about.html">关于我们</a>
+    </div>
+
+    <main class="page-content">
+        <div class="container">
+            <div class="forum-header">
+                <div>
+                    <h1 class="page-title">📋 委托</h1>
+                    <p class="page-desc">发布求助信息，请求同学们帮助流浪猫狗</p>
+                </div>
+                <button class="btn btn-primary" idBtn">➕ 发布委托</button="newEntrust>
+            </div>
+
+            <!-- 发布委托弹窗 -->
+            <div class="modal" id="entrustModal">
+                <div class="modal-content">
+                    <span class="modal-close" id="closeEntrustModal">&times;</span>
+                    <h2>发布委托</h2>
+                    <form id="entrustForm">
+                        <div class="form-group">
+                            <label>委托类型</label>
+                            <select name="type" required>
+                                <option value="feed">🍚 帮忙喂食</option>
+                                <option value="medical">🏥 医疗帮助</option>
+                                <option value="capture">🛏️ 捕捉送医</option>
+                                <option value="foster">🏠 临时安置</option>
+                                <option value="neuter">💉 绝育帮助</option>
+                                <option value="other">📝 其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>标题</label>
+                            <input type="text" name="title" required placeholder="简要描述需求">
+                        </div>
+                        <div class="form-group">
+                            <label>详细描述</label>
+                            <textarea name="description" rows="4" required placeholder="说明具体情况、地点、时间要求等"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>地点</label>
+                            <input type="text" name="location" required placeholder="例如：宿舍楼A区花园">
+                        </div>
+                        <div class="form-group">
+                            <label>联系方式</label>
+                            <input type="text" name="contact" required placeholder="微信/电话">
+                        </div>
+                        <div class="form-group">
+                            <label>报酬（可选）</label>
+                            <input type="text" name="reward" placeholder="请客喝奶茶/小礼物等">
+                        </div>
+                        <button type="submit" class="btn btn-primary">发布</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 筛选 -->
+            <div class="forum-filters">
+                <button class="filter-btn active" data-type="all">全部</button>
+                <button class="filter-btn" data-type="feed">🍚 喂食</button>
+                <button class="filter-btn" data-type="medical">🏥 医疗</button>
+                <button class="filter-btn" data-type="capture">🛏️ 捕捉</button>
+                <button class="filter-btn" data-type="foster">🏠 安置</button>
+                <button class="filter-btn" data-type="neuter">💉 绝育</button>
+            </div>
+
+            <!-- 委托列表 -->
+            <div class="entrust-list" id="entrustList">
+                <!-- 委托将通过JS生成 -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 西安财经大学流浪动物关爱平台</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initEntrust();
+        });
+    </script>
+</body>
+</html>
