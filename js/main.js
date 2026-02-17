@@ -158,10 +158,11 @@ function initMap() {
         // 创建地图
         const map = L.map('map').setView(campusCenter, 16);
         
-        // 添加 OpenStreetMap 图层
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 19
+        // 使用高德地图 (国内可用)
+        L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+            subdomains: '1234',
+            attribution: '© 高德地图',
+            maxZoom: 18
         }).addTo(map);
 
         // 添加标记点
