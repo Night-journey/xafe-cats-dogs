@@ -571,3 +571,186 @@ function initAdoption() {
         }
     }
 }
+
+// ==================== 猫狗图鉴功能 ====================
+function initGallery() {
+    const galleryGrid = document.getElementById('galleryGrid');
+    if (!galleryGrid) return;
+
+    const icons = { 'cat': '🐱', 'dog': '🐕' };
+    
+    // 渲染图鉴卡片
+    function renderGallery(filter = 'all', search = '') {
+        let animals = GALLERY_DATA;
+        
+        // 筛选
+        if (filter === 'cat') {
+            animals = animals.filter(a => a.type === 'cat');
+        } else if (filter === 'dog') {
+            animals = animals.filter(a => a.type === 'dog');
+        } else if (filter === 'adopted') {
+            animals = animals.filter(a => a.statusCode === 'adopted');
+        } else if (filter === 'star') {
+            animals = animals.filter(a => a.personality.includes('亲人'));
+        }
+        
+        // 搜索
+        if (search) {
+            const s = search.toLowerCase();
+            animals = animals.filter(a => 
+                a.name.toLowerCase().includes(s) ||
+                a.alias.toLowerCase().includes(s) ||
+                a.location.toLowerCase().includes(s)
+            );
+        }
+        
+        galleryGrid.innerHTML = animals.map(animal => {
+            const statusInfo = STATUS_MAP[animal.statusCode] || STATUS_MAP.active;
+            
+            return `
+                <div class="gallery-card" data-id="${animal.id}" data-type="${animal.type}">
+                    <div class="gallery-card-image">
+                        <span class="gallery-card-emoji">${icons[animal.type]}</span>
+                        <span class="gallery-card-status ${statusInfo.class}">${statusInfo.emoji} ${statusInfo.text}</span>
+                    </div>
+                    <div class="gallery-card-content">
+                        <h3 class="gallery-card-name">${animal.name}</h3>
+                        <p class="gallery-card-alias">${animal.alias || '暂无别名'}</p>
+                        <div class="gallery-card-tags">
+                            ${animal.neuter ? 
+                                `<span class="gallery-card-tag neutered">💉 已绝育</span>` : 
+                                `<span class="gallery-card-tag unneutered">⚠️ 未绝育</span>`
+                            }
+                            ${animal.personality.slice(0, 2).map(p => 
+                                `<span class="gallery-card-tag">#${p}</span>`
+                            ).join('')}
+                        </div>
+                        <div class="gallery-card-location">
+                            📍 ${animal.location}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        // 添加点击事件
+        document.querySelectorAll('.gallery-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const id = parseInt(this.dataset.id);
+                showGalleryDetail(id);
+            });
+        });
+    }
+    
+    // 初始化渲染
+    renderGallery();
+    
+    // 筛选按钮
+    const filterBtns = document.querySelectorAll('.gallery-filters .filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            const search = document.getElementById('gallerySearch')?.value || '';
+            renderGallery(this.dataset.filter, search);
+        });
+    });
+    
+    // 搜索功能
+    const searchInput = document.getElementById('gallerySearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const activeFilter = document.querySelector('.gallery-filters .filter-btn.active')?.dataset.filter || 'all';
+            renderGallery(activeFilter, this.value);
+        });
+    }
+    
+    // 弹窗关闭
+    const modal = document.getElementById('galleryModal');
+    const modalClose = document.getElementById('galleryModalClose');
+    
+    modalClose?.addEventListener('click', () => {
+        modal.classList.remove('active');
+    });
+    
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+        }
+    });
+}
+
+// 显示详情
+function showGalleryDetail(id) {
+    const animal = GALLERY_DATA.find(a => a.id === id);
+    if (!animal) return;
+    
+    const icons = { 'cat': '🐱', 'dog': '🐕' };
+    const modal = document.getElementById('galleryModal');
+    
+    // 填充基本信息
+    document.getElementById('detailImage').textContent = icons[animal.type];
+    document.getElementById('detailName').textContent = animal.name;
+    document.getElementById('detailAlias').textContent = `别名：${animal.alias || '-'}`;
+    
+    // 标签
+    const tagsContainer = document.getElementById('detailTags');
+    tagsContainer.innerHTML = `
+        ${animal.neuter ? 
+            `<span class="detail-tag neutered">💉 ${animal.neuterNote}</span>` : 
+            `<span class="detail-tag unneutered">⚠️ ${animal.neuterNote}</span>`
+        }
+        <span class="detail-tag status-tag ${STATUS_MAP[animal.statusCode]?.class || ''}">
+            ${STATUS_MAP[animal.statusCode]?.emoji || ''} ${STATUS_MAP[animal.statusCode]?.text || ''}
+        </span>
+    `;
+    
+    // 信息卡
+    document.getElementById('detailType').textContent = animal.type === 'cat' ? '🐱 猫咪' : '🐕 狗狗';
+    document.getElementById('detailColor').textContent = animal.color;
+    document.getElementById('detailGender').textContent = animal.gender;
+    document.getElementById('detailAge').textContent = animal.age;
+    document.getElementById('detailNeuter').textContent = animal.neuterNote;
+    document.getElementById('detailLocation').textContent = animal.location;
+    document.getElementById('detailActiveTime').textContent = animal.activeTime;
+    document.getElementById('detailStatus').textContent = STATUS_MAP[animal.statusCode]?.text || '';
+    
+    // 性格标签
+    const personalityContainer = document.getElementById('detailPersonality');
+    personalityContainer.innerHTML = animal.personality.map(p => 
+        `<span class="personality-tag good">#${p}</span>`
+    ).join('') + 
+    (animal.personalityBad || []).map(p => 
+        `<span class="personality-tag bad">#${p}</span>`
+    ).join('');
+    
+    // 投喂指南
+    document.getElementById('detailFeedGuide').textContent = animal.feedGuide || '暂无';
+    
+    // 介绍
+    document.getElementById('detailIntro').textContent = animal.intro || '暂无介绍';
+    
+    // 趣闻轶事
+    const storiesSection = document.getElementById('detailStoriesSection');
+    const storiesEl = document.getElementById('detailStories');
+    if (animal.stories) {
+        storiesEl.textContent = animal.stories;
+        storiesSection.style.display = 'block';
+    } else {
+        storiesSection.style.display = 'none';
+    }
+    
+    // 人际关系
+    const relationsSection = document.getElementById('detailRelationsSection');
+    const relationsEl = document.getElementById('detailRelations');
+    if (animal.relations) {
+        relationsEl.textContent = animal.relations;
+        relationsSection.style.display = 'block';
+    } else {
+        relationsSection.style.display = 'none';
+    }
+    
+    // 显示弹窗
+    modal.classList.add('active');
+}

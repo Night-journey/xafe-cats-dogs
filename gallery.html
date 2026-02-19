@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猫狗图鉴 - 西财流浪猫狗</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🐾</span>
+                <span class="logo-text">西财流浪动物</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="map.html">校园地图</a></li>
+                <li><a href="gallery.html" class="active">🐾 猫狗图鉴</a></li>
+                <li><a href="forum.html">论坛</a></li>
+                <li><a href="entrust.html">委托</a></li>
+                <li><a href="adoption.html">领养</a></li>
+                <li><a href="rescue.html">救助知识</a></li>
+                <li><a href="about.html">关于我们</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">首页</a>
+        <a href="map.html">校园地图</a>
+        <a href="gallery.html">🐾 猫狗图鉴</a>
+        <a href="forum.html">论坛</a>
+        <a href="entrust.html">委托</a>
+        <a href="adoption.html">领养</a>
+        <a href="rescue.html">救助知识</a>
+        <a href="about.html">关于我们</a>
+    </div>
+
+    <main class="page-content">
+        <div class="container">
+            <h1 class="page-title">🐾 猫狗图鉴</h1>
+            <p class="page-desc">校园里的流浪猫狗档案，了解它们的名字、性格和出没地点</p>
+            
+            <!-- 筛选器 -->
+            <div class="gallery-filters">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="cat">🐱 猫咪</button>
+                <button class="filter-btn" data-filter="dog">🐕 狗狗</button>
+                <button class="filter-btn" data-filter="adopted">🏠 已领养</button>
+                <button class="filter-btn" data-filter="star">⭐ 亲人可互动</button>
+            </div>
+
+            <!-- 搜索框 -->
+            <div class="gallery-search">
+                <input type="text" id="gallerySearch" placeholder="🔍 搜索名字、别名或地点...">
+            </div>
+
+            <!-- 图鉴卡片网格 -->
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- 卡片将通过JS生成 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 详情弹窗 -->
+    <div class="gallery-modal" id="galleryModal">
+        <div class="gallery-modal-content">
+            <button class="gallery-modal-close" id="galleryModalClose">✕</button>
+            
+            <div class="gallery-detail">
+                <!-- 头部图片区 -->
+                <div class="gallery-detail-header">
+                    <div class="gallery-detail-image" id="detailImage">
+                        🐱
+                    </div>
+                    <div class="gallery-detail-title">
+                        <h2 id="detailName">名字</h2>
+                        <p id="detailAlias" class="detail-alias">别名：-</p>
+                        <div class="detail-tags" id="detailTags">
+                            <!-- 标签 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 信息卡 -->
+                <div class="gallery-detail-info">
+                    <div class="detail-info-grid">
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">🐾 类型</span>
+                            <span id="detailType">-</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">🎨 花色</span>
+                            <span id="detailColor">-</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">⚧ 性别</span>
+                            <span id="detailGender">-</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">🎂 预估年龄</span>
+                            <span id="detailAge">-</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">💉 绝育状态</span>
+                            <span id="detailNeuter">-</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">📍 常驻地点</span>
+                            <span id="detailLocation">-</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">⏰ 活跃时间</span>
+                            <span id="detailActiveTime">-</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">📌 当前状态</span>
+                            <span id="detailStatus">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 性格标签 -->
+                <div class="gallery-detail-section">
+                    <h3>😺 性格标签</h3>
+                    <div class="detail-personality-tags" id="detailPersonality">
+                        <!-- 性格标签 -->
+                    </div>
+                </div>
+
+                <!-- 投喂指南 -->
+                <div class="gallery-detail-section">
+                    <h3>🍚 投喂指南</h3>
+                    <p id="detailFeedGuide">-</p>
+                </div>
+
+                <!-- 介绍 -->
+                <div class="gallery-detail-section">
+                    <h3>📝 介绍</h3>
+                    <p id="detailIntro">-</p>
+                </div>
+
+                <!-- 趣闻轶事 -->
+                <div class="gallery-detail-section" id="detailStoriesSection">
+                    <h3>🌟 趣闻轶事</h3>
+                    <p id="detailStories">-</p>
+                </div>
+
+                <!-- 人际关系 -->
+                <div class="gallery-detail-section" id="detailRelationsSection">
+                    <h3>👥 人际关系</h3>
+                    <p id="detailRelations">-</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 西安财经大学流浪动物关爱平台</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initGallery();
+        });
+    </script>
+</body>
+</html>

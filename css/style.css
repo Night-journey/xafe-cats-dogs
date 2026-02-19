@@ -1153,3 +1153,387 @@ body {
     background: #4CAF50;
     color: white;
 }
+
+/* ==================== 猫狗图鉴样式 ==================== */
+
+/* 筛选器 */
+.gallery-filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.gallery-filters .filter-btn {
+    padding: 8px 16px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.gallery-filters .filter-btn:hover {
+    border-color: var(--primary);
+}
+
+.gallery-filters .filter-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+/* 搜索框 */
+.gallery-search {
+    margin-bottom: 30px;
+}
+
+.gallery-search input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+.gallery-search input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* 卡片网格 */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+/* 图鉴卡片 */
+.gallery-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.gallery-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.gallery-card-image {
+    height: 140px;
+    background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.gallery-card-emoji {
+    font-size: 60px;
+}
+
+.gallery-card-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.gallery-card-status.status-active {
+    background: #4caf50;
+    color: white;
+}
+
+.gallery-card-status.status-adopted {
+    background: #2196f3;
+    color: white;
+}
+
+.gallery-card-status.status-medical {
+    background: #ff9800;
+    color: white;
+}
+
+.gallery-card-status.status-passed {
+    background: #9e9e9e;
+    color: white;
+}
+
+.gallery-card-content {
+    padding: 16px;
+}
+
+.gallery-card-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.gallery-card-alias {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.gallery-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.gallery-card-tag {
+    padding: 3px 8px;
+    background: #f5f5f5;
+    border-radius: 6px;
+    font-size: 11px;
+    color: #666;
+}
+
+.gallery-card-tag.neutered {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.gallery-card-tag.unneutered {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.gallery-card-location {
+    font-size: 13px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 详情弹窗 */
+.gallery-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.gallery-modal.active {
+    display: flex;
+}
+
+.gallery-modal-content {
+    background: white;
+    border-radius: 20px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.gallery-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.3s;
+}
+
+.gallery-modal-close:hover {
+    background: #e0e0e0;
+}
+
+/* 详情头部 */
+.gallery-detail-header {
+    padding: 30px;
+    background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.gallery-detail-image {
+    width: 100px;
+    height: 100px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.gallery-detail-title h2 {
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+.detail-alias {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.detail-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.detail-tag {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.detail-tag.neutered {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.detail-tag.unneutered {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.detail-tag.status-active {
+    background: #4caf50;
+    color: white;
+}
+
+.detail-tag.status-adopted {
+    background: #2196f3;
+    color: white;
+}
+
+.detail-tag.status-passed {
+    background: #9e9e9e;
+    color: white;
+}
+
+/* 详情信息卡 */
+.gallery-detail-info {
+    padding: 20px 30px;
+    background: #fafafa;
+}
+
+.detail-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.detail-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-info-label {
+    font-size: 12px;
+    color: #888;
+}
+
+.detail-info-item span:last-child {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* 详情区块 */
+.gallery-detail-section {
+    padding: 20px 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.gallery-detail-section:last-child {
+    border-bottom: none;
+}
+
+.gallery-detail-section h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.gallery-detail-section p {
+    color: #666;
+    line-height: 1.8;
+}
+
+/* 性格标签 */
+.detail-personality-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.personality-tag {
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+}
+
+.personality-tag.good {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.personality-tag.bad {
+    background: #ffebee;
+    color: #c62828;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .gallery-detail-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .detail-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+}
