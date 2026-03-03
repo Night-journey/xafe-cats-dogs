@@ -174,18 +174,23 @@
         // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
             initGallery();
+            // 立即设置监听
+            setTimeout(setupAvatarUpload, 500);
         });
 
         // 监听弹窗显示变化，添加上传按钮
         function setupAvatarUpload() {
             var modal = document.getElementById('galleryModal');
-            if (!modal) return;
+            if (!modal) {
+                setTimeout(setupAvatarUpload, 500);
+                return;
+            }
             
             var observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                        if (modal.style.display === 'block') {
-                            setTimeout(addUploadButton, 100);
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        if (modal.classList.contains('active')) {
+                            setTimeout(addUploadButton, 200);
                         }
                     }
                 });
@@ -193,9 +198,6 @@
             
             observer.observe(modal, { attributes: true });
         }
-
-        // 页面加载后设置监听
-        setTimeout(setupAvatarUpload, 1000);
 
         // 添加头像上传按钮
         function addUploadButton() {
