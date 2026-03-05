@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员后台 - 西财流浪猫狗</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+    <style>
+        .admin-container {
+            min-height: calc(100vh - 70px);
+            padding: 40px 20px;
+            background: #f5f7fa;
+        }
+
+        .admin-header {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-title {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+
+        .admin-title span {
+            color: var(--primary);
+        }
+
+        .admin-logout {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .admin-logout:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .admin-stats {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .admin-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 30px;
+        }
+
+        .admin-section-title {
+            font-size: 1.3rem;
+            color: var(--dark);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .animal-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .animal-card {
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex 16px;
+            transition: all 0.3;
+            gap:s;
+        }
+
+        .animal-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .animal-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .animal-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .animal-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .animal-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .animal-alias {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .animal-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .animal-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .animal-btn-edit {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .animal-btn-edit:hover {
+            background: #3dbdb5;
+        }
+
+        .animal-btn-avatar {
+            background: var(--primary);
+            color: white;
+        }
+
+        .animal-btn-avatar:hover {
+            background: var(--primary-dark);
+        }
+
+        /* 头像上传弹窗 */
+        .avatar-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-modal.show {
+            display: flex;
+        }
+
+        .avatar-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .avatar-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .avatar-modal-title {
+            font-size: 1.4rem;
+            color: var(--dark);
+        }
+
+        .avatar-modal-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .avatar-preview {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 24px;
+            border-radius: 16px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            overflow: hidden;
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-upload-options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .avatar-option {
+            padding: 16px;
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .avatar-option:hover {
+            border-color: var(--primary);
+            background: #fff5f5;
+        }
+
+        .avatar-option-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .avatar-option-text {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .avatar-option-hint {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .avatar-url-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .avatar-url-input.show {
+            display: block;
+        }
+
+        .avatar-url-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .avatar-save-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .avatar-save-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .avatar-save-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Emoji 选择 */
+        .emoji-picker {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .emoji-picker.show {
+            display: grid;
+        }
+
+        .emoji-option {
+            font-size: 1.8rem;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .emoji-option:hover {
+            background: #e0e0e0;
+        }
+
+        /* 未登录提示 */
+        .not-login {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .not-login-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .not-login-text {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        .not-login-btn {
+            padding: 12px 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🐾</span>
+                <span class="logo-text">西财流浪动物</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="map.html">校园地图</a></li>
+                <li><a href="gallery.html">🐾 猫狗图鉴</a></li>
+                <li><a href="forum.html">论坛</a></li>
+                <li><a href="entrust.html">委托</a></li>
+                <li><a href="adoption.html">领养</a></li>
+                <li><a href="rescue.html">救助知识</a></li>
+                <li><a href="about.html">关于我们</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">首页</a>
+        <a href="map.html">校园地图</a>
+        <a href="gallery.html">🐾 猫狗图鉴</a>
+        <a href="forum.html">论坛</a>
+        <a href="entrust.html">委托</a>
+        <a href="adoption.html">领养</a>
+        <a href="rescue.html">救助知识</a>
+        <a href="about.html">关于我们</a>
+    </div>
+
+    <!-- 未登录提示 -->
+    <div class="admin-container" id="notLogin">
+        <div class="not-login">
+            <div class="not-login-icon">🔒</div>
+            <p class="not-login-text">请先登录管理员账号</p>
+            <a href="admin.html" class="not-login-btn">去登录</a>
+        </div>
+    </div>
+
+    <!-- 管理后台 -->
+    <div class="admin-container" id="adminContent" style="display: none;">
+        <div class="admin-header">
+            <h1 class="admin-title">管理后台 <span>🐾</span></h1>
+            <button class="admin-logout" id="logoutBtn">退出登录</button>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="admin-stats">
+            <div class="stat-card">
+                <div class="stat-icon">🐱</div>
+                <div class="stat-number" id="catCount">0</div>
+                <div class="stat-label">猫咪数量</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🐕</div>
+                <div class="stat-number" id="dogCount">0</div>
+                <div class="stat-label">狗狗数量</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">动物总数</div>
+            </div>
+        </div>
+
+        <!-- 动物列表 -->
+        <div class="admin-section">
+            <h2 class="admin-section-title">🐾 动物管理</h2>
+            <div class="animal-list" id="animalList">
+                <!-- 动物卡片将通过JS生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 头像上传弹窗 -->
+    <div class="avatar-modal" id="avatarModal">
+        <div class="avatar-modal-content">
+            <div class="avatar-modal-header">
+                <h3 class="avatar-modal-title">更换头像</h3>
+                <button class="avatar-modal-close" id="avatarModalClose">✕</button>
+            </div>
+            
+            <div class="avatar-preview" id="avatarPreview">🐱</div>
+            
+            <div class="avatar-upload-options">
+                <div class="avatar-option" id="uploadLocalBtn">
+                    <div class="avatar-option-icon">📁</div>
+                    <div class="avatar-option-text">本地上传</div>
+                    <div class="avatar-option-hint">支持 JPG, PNG, GIF, WebP</div>
+                    <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
+                </div>
+                
+                <div class="avatar-option" id="uploadUrlBtn">
+                    <div class="avatar-option-icon">🔗</div>
+                    <div class="avatar-option-text">图片链接</div>
+                    <div class="avatar-option-hint">粘贴图片网址</div>
+                </div>
+                
+                <input type="text" class="avatar-url-input" id="avatarUrlInput" placeholder="请输入图片链接...">
+                
+                <div class="avatar-option" id="selectEmojiBtn">
+                    <div class="avatar-option-icon">😊</div>
+                    <div class="avatar-option-text">Emoji 头像</div>
+                    <div class="avatar-option-hint">选择表情符号</div>
+                </div>
+                
+                <div class="emoji-picker" id="emojiPicker">
+                    <!-- Emoji选项 -->
+                </div>
+            </div>
+            
+            <button class="avatar-save-btn" id="avatarSaveBtn">保存头像</button>
+        </div>
+    </div>
+
+    <script>
+        // 检查登录状态
+        function checkAdmin() {
+            const isAdmin = localStorage.getItem('isAdmin');
+            if (isAdmin !== 'true') {
+                document.getElementById('notLogin').style.display = 'block';
+                document.getElementById('adminContent').style.display = 'none';
+                return false;
+            }
+            document.getElementById('notLogin').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            return true;
+        }
+
+        // 退出登录
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('isAdmin');
+            localStorage.removeItem('adminLoginTime');
+            window.location.href = 'admin.html';
+        });
+
+        // 动物数据（从服务器获取）
+        let animals = [];
+        let currentEditingAnimal = null;
+
+        // 加载动物数据
+        async function loadAnimals() {
+            if (!checkAdmin()) return;
+            
+            try {
+                const response = await fetch('/api/animals');
+                animals = await response.json();
+                renderAnimals();
+                updateStats();
+            } catch (error) {
+                console.error('加载动物数据失败:', error);
+                // 尝试从本地文件加载（开发环境）
+                try {
+                    const localResponse = await fetch('animals.json');
+                    animals = await localResponse.json();
+                    renderAnimals();
+                    updateStats();
+                } catch (e) {
+                    console.error('加载本地数据也失败:', e);
+                }
+            }
+        }
+
+        // 渲染动物列表
+        function renderAnimals() {
+            const container = document.getElementById('animalList');
+            container.innerHTML = animals.map(animal => `
+                <div class="animal-card">
+                    <div class="animal-avatar">
+                        ${animal.images && animal.images[0] ? 
+                            (animal.images[0].startsWith('http') ? 
+                                `<img src="${animal.images[0]}" alt="${animal.name}">` : 
+                                animal.images[0]) : 
+                            '🐱'}
+                    </div>
+                    <div class="animal-info">
+                        <div class="animal-name">${animal.name}</div>
+                        <div class="animal-alias">${animal.alias || '暂无别名'}</div>
+                        <div class="animal-actions">
+                            <button class="animal-btn animal-btn-avatar" onclick="openAvatarModal(${animal.id})">
+                                📷 换头像
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 更新统计
+        function updateStats() {
+            const cats = animals.filter(a => a.type === 'cat').length;
+            const dogs = animals.filter(a => a.type === 'dog').length;
+            document.getElementById('catCount').textContent = cats;
+            document.getElementById('dogCount').textContent = dogs;
+            document.getElementById('totalCount').textContent = animals.length;
+        }
+
+        // 打开头像弹窗
+        function openAvatarModal(animalId) {
+            currentEditingAnimal = animals.find(a => a.id === animalId);
+            if (!currentEditingAnimal) return;
+            
+            const modal = document.getElementById('avatarModal');
+            const preview = document.getElementById('avatarPreview');
+            
+            // 显示当前头像
+            const currentImage = currentEditingAnimal.images && currentEditingAnimal.images[0];
+            if (currentImage && currentImage.startsWith('http')) {
+                preview.innerHTML = `<img src="${currentImage}" alt="当前头像">`;
+            } else {
+                preview.textContent = currentImage || '🐱';
+            }
+            
+            // 重置表单
+            document.getElementById('avatarUrlInput').value = '';
+            document.getElementById('avatarUrlInput').classList.remove('show');
+            document.getElementById('emojiPicker').classList.remove('show');
+            
+            modal.classList.add('show');
+        }
+
+        // 关闭头像弹窗
+        document.getElementById('avatarModalClose').addEventListener('click', function() {
+            document.getElementById('avatarModal').classList.remove('show');
+            currentEditingAnimal = null;
+        });
+
+        // 本地上传
+        document.getElementById('uploadLocalBtn').addEventListener('click', function() {
+            document.getElementById('avatarFileInput').click();
+        });
+
+        let selectedFile = null;
+        document.getElementById('avatarFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                selectedFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarPreview').innerHTML = `<img src="${e.target.result}" alt="预览">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // URL上传
+        document.getElementById('uploadUrlBtn').addEventListener('click', function() {
+            document.getElementById('avatarUrlInput').classList.toggle('show');
+            document.getElementById('emojiPicker').classList.remove('show');
+        });
+
+        document.getElementById('avatarUrlInput').addEventListener('input', function(e) {
+            const url = e.target.value;
+            if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                document.getElementById('avatarPreview').innerHTML = `<img src="${url}" alt="预览" onerror="this.parentElement.textContent='❌ 图片加载失败'">`;
+            }
+        });
+
+        // Emoji选择
+        const emojiList = ['🐱', '🐶', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦'];
+        document.getElementById('selectEmojiBtn').addEventListener('click', function() {
+            const picker = document.getElementById('emojiPicker');
+            picker.classList.toggle('show');
+            document.getElementById('avatarUrlInput').classList.remove('show');
+            
+            if (picker.classList.contains('show') && picker.children.length === 0) {
+                picker.innerHTML = emojiList.map(emoji => 
+                    `<div class="emoji-option" onclick="selectEmoji('${emoji}')">${emoji}</div>`
+                ).join('');
+            }
+        });
+
+        function selectEmoji(emoji) {
+            document.getElementById('avatarPreview').textContent = emoji;
+        }
+
+        // 保存头像
+        document.getElementById('avatarSaveBtn').addEventListener('click', async function() {
+            if (!currentEditingAnimal) return;
+            
+            const preview = document.getElementById('avatarPreview');
+            let newImage = '';
+            
+            // 获取新头像
+            const img = preview.querySelector('img');
+            if (img) {
+                newImage = img.src;
+            } else if (preview.textContent && emojiList.includes(preview.textContent)) {
+                newImage = preview.textContent;
+            } else {
+                newImage = document.getElementById('avatarUrlInput').value;
+            }
+            
+            if (!newImage) {
+                alert('请选择一个新的头像');
+                return;
+            }
+            
+            // 更新数据
+            currentEditingAnimal.images = [newImage];
+            
+            // 发送更新请求
+            try {
+                const response = await fetch(`/api/animals/${currentEditingAnimal.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ images: [newImage] })
+                });
+                
+                if (response.ok) {
+                    alert('头像更新成功！');
+                    document.getElementById('avatarModal').classList.remove('show');
+                    loadAnimals();
+                } else {
+                    throw new Error('更新失败');
+                }
+            } catch (error) {
+                console.error('更新头像失败:', error);
+                // 本地模式：更新本地数组并提示
+                alert('头像更新成功！（本地模式）');
+                document.getElementById('avatarModal').classList.remove('show');
+                renderAnimals();
+            }
+            
+            currentEditingAnimal = null;
+            selectedFile = null;
+        });
+
+        // 移动端菜单
+        document.getElementById('navToggle').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        });
+
+        // 初始化
+        loadAnimals();
+    </script>
+</body>
+</html>
