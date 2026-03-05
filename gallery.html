@@ -445,6 +445,144 @@
         // 页面初始化
         document.addEventListener('DOMContentLoaded', function() {
             initGallery();
+            // 立即设置监听
+            setTimeout(setupAvatarUpload, 500);
+        });
+
+        // 监听弹窗显示变化，添加上传按钮
+        function setupAvatarUpload() {
+            var modal = document.getElementById('galleryModal');
+            if (!modal) {
+                setTimeout(setupAvatarUpload, 500);
+                return;
+            }
+            
+            var observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        if (modal.classList.contains('active')) {
+                            setTimeout(addUploadButton, 200);
+                        }
+                    }
+                });
+            });
+            
+            observer.observe(modal, { attributes: true });
+        }
+
+        // 添加头像上传按钮
+        function addUploadButton() {
+            var detailImage = document.getElementById('detailImage');
+            if (!detailImage) return;
+            
+            // 避免重复添加
+            if (detailImage.querySelector('.upload-btn')) return;
+            
+            // 获取当前显示的动物名字
+            var nameEl = document.getElementById('detailName');
+            if (!nameEl) return;
+            
+            var name = nameEl.textContent;
+            var animal = GALLERY_DATA.find(function(a) { return a.name === name; });
+            if (!animal) return;
+            
+            // 检查是否有自定义头像
+            try {
+                var customAvatars = JSON.parse(localStorage.getItem('animalAvatars') || '{}');
+                var avatarUrl = customAvatars[animal.id];
+                
+                if (avatarUrl && !detailImage.querySelector('img')) {
+                    detailImage.innerHTML = '<img src="' + avatarUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+                }
+            } catch(e) {}
+            
+            // 设置父元素为relative
+            detailImage.style.position = 'relative';
+            
+            // 创建上传按钮
+            var btn = document.createElement('button');
+            btn.innerHTML = '+';
+            btn.className = 'upload-btn';
+            btn.title = '更换头像';
+            btn.style.cssText = 'position:absolute;bottom:10px;right:10px;width:36px;height:36px;border-radius:50%;border:none;background:#4CAF50;color:white;cursor:pointer;font-size:20px;';
+            
+            // 创建文件输入
+            var fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.style.display = 'none';
+            
+            // 绑定点击事件
+            btn.onclick = function() { fileInput.click(); };
+            fileInput.onchange = function(e) { handleUpload(e, animal.id); };
+            
+            detailImage.appendChild(btn);
+            detailImage.appendChild(fileInput);
+        }
+
+        // 处理头像上传
+        function handleUpload(e, animalId) {
+            var file = e.target.files[0];
+            if (!file) return;
+            
+            var formData = new FormData();
+            formData.append('image', file);
+            
+            fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    // 保存到localStorage
+                    var customAvatars = JSON.parse(localStorage.getItem('animalAvatars') || '{}');
+                    customAvatars[animalId] = data.url;
+                    localStorage.setItem('animalAvatars', JSON.stringify(customAvatars));
+                    
+                    // 更新显示
+                    var detailImage = document.getElementById('detailImage');
+                    detailImage.innerHTML = '<img src="' + data.url + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+                    
+                    // 重新添加按钮
+                    addUploadButton();
+                    
+                    // 更新列表中的头像
+                    updateCardImage(animalId, data.url);
+                    
+                    alert('头像更新成功！');
+                } else {
+                    alert('上传失败：' + data.error);
+                }
+            })
+            .catch(function(err) {
+                alert('上传失败');
+            });
+            
+            e.target.value = '';
+        }
+
+        // 更新卡片头像
+        function updateCardImage(animalId, imageUrl) {
+            var card = document.querySelector('[data-id="' + animalId + '"]');
+            if (card) {
+                var imgDiv = card.querySelector('.gallery-card-image');
+                if (imgDiv) {
+                    imgDiv.innerHTML = '<img src="' + imageUrl + '" style="width:100%;height:100%;object-fit:cover;">';
+                }
+            }
+        }
+
+        // 页面加载后更新所有卡片头像
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                try {
+                    var customAvatars = JSON.parse(localStorage.getItem('animalAvatars') || '{}');
+                    Object.keys(customAvatars).forEach(function(id) {
+                        updateCardImage(parseInt(id), customAvatars[id]);
+                    });
+                } catch(e) {}
+            }, 1000);
         });
     </script>
 </body>
