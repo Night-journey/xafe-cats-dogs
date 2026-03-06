@@ -23,12 +23,38 @@ document.addEventListener('DOMContentLoaded', function() {
     initHomeStats();
 });
 
+// 获取动物头像（优先使用images字段，否则使用默认emoji）
+function getAnimalAvatar(animal) {
+    const icons = { 'cat': '🐱', 'dog': '🐕' };
+    const defaultEmoji = icons[animal.type] || '🐾';
+    
+    // 检查images字段是否存在且有内容
+    if (animal.images && animal.images.length > 0 && animal.images[0]) {
+        const img = animal.images[0];
+        // 如果是有效的图片URL（http或data:image开头），返回img标签
+        if (img.startsWith('http') || img.startsWith('data:image')) {
+            return `<img src="${img}" alt="${animal.name}" style="width:100%;height:100%;object-fit:cover;">`;
+        }
+        // 否则可能是emoji，直接返回
+        return img;
+    }
+    // 没有任何头像，使用默认emoji
+    return defaultEmoji;
+}
+
 // 首页统计
 function initHomeStats() {
+    // 检查元素是否存在（有些页面没有这些统计元素）
+    const catCountEl = document.getElementById('catCount');
+    const dogCountEl = document.getElementById('dogCount');
+    const adoptedCountEl = document.getElementById('adoptedCount');
+    
+    if (!catCountEl && !dogCountEl && !adoptedCountEl) return;
+    
     const data = getData();
-    document.getElementById('catCount').textContent = data.locations.filter(l => l.type === 'cat').length;
-    document.getElementById('dogCount').textContent = data.locations.filter(l => l.type === 'dog').length;
-    document.getElementById('adoptedCount').textContent = data.adoptions.length;
+    if (catCountEl) catCountEl.textContent = data.locations.filter(l => l.type === 'cat').length;
+    if (dogCountEl) dogCountEl.textContent = data.locations.filter(l => l.type === 'dog').length;
+    if (adoptedCountEl) adoptedCountEl.textContent = data.adoptions.length;
 
     // 显示最近动态
     const activityList = document.getElementById('activityList');
@@ -623,7 +649,7 @@ function initGallery() {
             return `
                 <div class="gallery-card" data-id="${animal.id}" data-type="${animal.type}">
                     <div class="gallery-card-image">
-                        <span class="gallery-card-emoji">${icons[animal.type]}</span>
+                        <span class="gallery-card-emoji">${getAnimalAvatar(animal)}</span>
                         <span class="gallery-card-status ${statusInfo.class}">${statusInfo.emoji} ${statusInfo.text}</span>
                     </div>
                     <div class="gallery-card-content">
@@ -714,7 +740,7 @@ function showGalleryDetail(id) {
     const modal = document.getElementById('galleryModal');
     
     // 填充基本信息
-    document.getElementById('detailImage').textContent = icons[animal.type];
+    document.getElementById('detailImage').innerHTML = getAnimalAvatar(animal);
     document.getElementById('detailName').textContent = animal.name;
     document.getElementById('detailAlias').textContent = `别名：${animal.alias || '-'}`;
     
@@ -878,9 +904,15 @@ function initEditAnimalModal() {
                 intro: form.intro.value,
                 stories: form.stories.value,
                 relations: form.relations.value,
-                images: form.dataset.images ? JSON.parse(form.dataset.images) : [form.type.value === 'cat' ? '🐱' : '🐕'],
+                // 注意：普通用户编辑时不修改头像，头像只能在管理员界面修改
+                // 读取现有数据以保留头像
                 personalityBad: personalityBad
             };
+            
+            // 保留原有头像（普通用户不应修改头像）- 使用打开弹窗时保存的数据
+            if (form.dataset.images) {
+                animalData.images = JSON.parse(form.dataset.images);
+            }
             
             updateAnimal(id, animalData);
             alert('更新成功！');
