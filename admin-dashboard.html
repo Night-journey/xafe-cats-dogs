@@ -476,9 +476,9 @@
                 <h3 class="avatar-modal-title">更换头像</h3>
                 <button class="avatar-modal-close" id="avatarModalClose">✕</button>
             </div>
-            
+
             <div class="avatar-preview" id="avatarPreview">🐱</div>
-            
+
             <div class="avatar-upload-options">
                 <div class="avatar-option" id="uploadLocalBtn">
                     <div class="avatar-option-icon">📁</div>
@@ -486,26 +486,26 @@
                     <div class="avatar-option-hint">支持 JPG, PNG, GIF, WebP</div>
                     <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
                 </div>
-                
+
                 <div class="avatar-option" id="uploadUrlBtn">
                     <div class="avatar-option-icon">🔗</div>
                     <div class="avatar-option-text">图片链接</div>
                     <div class="avatar-option-hint">粘贴图片网址</div>
                 </div>
-                
+
                 <input type="text" class="avatar-url-input" id="avatarUrlInput" placeholder="请输入图片链接...">
-                
+
                 <div class="avatar-option" id="selectEmojiBtn">
                     <div class="avatar-option-icon">😊</div>
                     <div class="avatar-option-text">Emoji 头像</div>
                     <div class="avatar-option-hint">选择表情符号</div>
                 </div>
-                
+
                 <div class="emoji-picker" id="emojiPicker">
                     <!-- Emoji选项 -->
                 </div>
             </div>
-            
+
             <button class="avatar-save-btn" id="avatarSaveBtn">保存头像</button>
         </div>
     </div>
@@ -538,7 +538,7 @@
         // 加载动物数据
         async function loadAnimals() {
             if (!checkAdmin()) return;
-            
+
             try {
                 const response = await fetch('/api/animals');
                 animals = await response.json();
@@ -564,10 +564,10 @@
             container.innerHTML = animals.map(animal => `
                 <div class="animal-card">
                     <div class="animal-avatar">
-                        ${animal.images && animal.images[0] ? 
-                            ((animal.images[0].startsWith('http') || animal.images[0].startsWith('data:image')) ? 
-                                `<img src="${animal.images[0]}" alt="${animal.name}">` : 
-                                animal.images[0]) : 
+                        ${animal.images && animal.images[0] ?
+                            ((animal.images[0].startsWith('http') || animal.images[0].startsWith('data:image')) ?
+                                `<img src="${animal.images[0]}" alt="${animal.name}">` :
+                                animal.images[0]) :
                             '🐱'}
                     </div>
                     <div class="animal-info">
@@ -596,10 +596,10 @@
         function openAvatarModal(animalId) {
             currentEditingAnimal = animals.find(a => a.id === animalId);
             if (!currentEditingAnimal) return;
-            
+
             const modal = document.getElementById('avatarModal');
             const preview = document.getElementById('avatarPreview');
-            
+
             // 显示当前头像
             const currentImage = currentEditingAnimal.images && currentEditingAnimal.images[0];
             if (currentImage && (currentImage.startsWith('http') || currentImage.startsWith('data:image'))) {
@@ -607,12 +607,12 @@
             } else {
                 preview.textContent = currentImage || '🐱';
             }
-            
+
             // 重置表单
             document.getElementById('avatarUrlInput').value = '';
             document.getElementById('avatarUrlInput').classList.remove('show');
             document.getElementById('emojiPicker').classList.remove('show');
-            
+
             modal.classList.add('show');
         }
 
@@ -659,9 +659,9 @@
             const picker = document.getElementById('emojiPicker');
             picker.classList.toggle('show');
             document.getElementById('avatarUrlInput').classList.remove('show');
-            
+
             if (picker.classList.contains('show') && picker.children.length === 0) {
-                picker.innerHTML = emojiList.map(emoji => 
+                picker.innerHTML = emojiList.map(emoji =>
                     `<div class="emoji-option" onclick="selectEmoji('${emoji}')">${emoji}</div>`
                 ).join('');
             }
@@ -674,20 +674,41 @@
         // 保存头像
         document.getElementById('avatarSaveBtn').addEventListener('click', async function() {
             if (!currentEditingAnimal) return;
-            
+
             const preview = document.getElementById('avatarPreview');
             let newImage = '';
             
             // 获取新头像
+            let newImage = '';
             const img = preview.querySelector('img');
-            if (img) {
-                newImage = img.src;
-                // 验证 base64 数据是否有效
-                if (!newImage.startsWith('data:image/')) {
-                    alert('图片数据格式无效，请重新选择图片');
+            
+            // 如果有选中文件，先上传文件
+            if (selectedFile) {
+                try {
+                    const formData = new FormData();
+                    formData.append('avatar', selectedFile);
+                    
+                    const uploadRes = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!uploadRes.ok) {
+                        throw new Error('文件上传失败');
+                    }
+                    
+                    const uploadData = await uploadRes.json();
+                    newImage = uploadData.url;
+                } catch (uploadError) {
+                    console.error('上传失败:', uploadError);
+                    alert('图片上传失败，请重试');
                     return;
                 }
+            } else if (img) {
+                // URL 方式上传
+                newImage = img.src;
             } else if (preview.textContent && emojiList.includes(preview.textContent)) {
+                // Emoji 方式
                 newImage = preview.textContent;
             } else {
                 newImage = document.getElementById('avatarUrlInput').value;
@@ -703,7 +724,7 @@
             
             // 发送更新请求
             try {
-                console.log('发送头像更新请求:', newImage.substring(0, 50) + '...');
+                console.log('发送头像更新请求:', newImage);
                 const response = await fetch(`/api/animals/${currentEditingAnimal.id}`, {
                     method: 'PUT',
                     headers: {
@@ -724,7 +745,6 @@
                 loadAnimals();
             } catch (error) {
                 console.error('更新头像失败:', error);
-                // 本地模式：更新本地数组并提示
                 alert('头像更新成功！（本地模式）');
                 document.getElementById('avatarModal').classList.remove('show');
                 renderAnimals();
