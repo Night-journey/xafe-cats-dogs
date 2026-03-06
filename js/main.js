@@ -878,7 +878,7 @@ function initEditAnimalModal() {
                 intro: form.intro.value,
                 stories: form.stories.value,
                 relations: form.relations.value,
-                images: [form.type.value === 'cat' ? '🐱' : '🐕'],
+                images: form.dataset.images ? JSON.parse(form.dataset.images) : [form.type.value === 'cat' ? '🐱' : '🐕'],
                 personalityBad: personalityBad
             };
             
@@ -909,6 +909,7 @@ function openEditModal(id) {
     if (!form) return;
     
     form.dataset.id = id;
+    form.dataset.images = JSON.stringify(animal.images || []); // 保存原来的头像
     form.name.value = animal.name || '';
     form.alias.value = animal.alias || '';
     form.type.value = animal.type || 'cat';
