@@ -565,7 +565,7 @@
                 <div class="animal-card">
                     <div class="animal-avatar">
                         ${animal.images && animal.images[0] ? 
-                            (animal.images[0].startsWith('http') ? 
+                            ((animal.images[0].startsWith('http') || animal.images[0].startsWith('data:image')) ? 
                                 `<img src="${animal.images[0]}" alt="${animal.name}">` : 
                                 animal.images[0]) : 
                             '🐱'}
@@ -602,7 +602,7 @@
             
             // 显示当前头像
             const currentImage = currentEditingAnimal.images && currentEditingAnimal.images[0];
-            if (currentImage && currentImage.startsWith('http')) {
+            if (currentImage && (currentImage.startsWith('http') || currentImage.startsWith('data:image'))) {
                 preview.innerHTML = `<img src="${currentImage}" alt="当前头像">`;
             } else {
                 preview.textContent = currentImage || '🐱';
@@ -682,6 +682,11 @@
             const img = preview.querySelector('img');
             if (img) {
                 newImage = img.src;
+                // 验证 base64 数据是否有效
+                if (!newImage.startsWith('data:image/')) {
+                    alert('图片数据格式无效，请重新选择图片');
+                    return;
+                }
             } else if (preview.textContent && emojiList.includes(preview.textContent)) {
                 newImage = preview.textContent;
             } else {
@@ -698,6 +703,7 @@
             
             // 发送更新请求
             try {
+                console.log('发送头像更新请求:', newImage.substring(0, 50) + '...');
                 const response = await fetch(`/api/animals/${currentEditingAnimal.id}`, {
                     method: 'PUT',
                     headers: {
@@ -706,13 +712,16 @@
                     body: JSON.stringify({ images: [newImage] })
                 });
                 
-                if (response.ok) {
-                    alert('头像更新成功！');
-                    document.getElementById('avatarModal').classList.remove('show');
-                    loadAnimals();
-                } else {
-                    throw new Error('更新失败');
+                console.log('响应状态:', response.status);
+                if (!response.ok) {
+                    const errText = await response.text();
+                    console.error('服务器错误:', errText);
+                    throw new Error('更新失败: ' + response.status);
                 }
+                
+                alert('头像更新成功！');
+                document.getElementById('avatarModal').classList.remove('show');
+                loadAnimals();
             } catch (error) {
                 console.error('更新头像失败:', error);
                 // 本地模式：更新本地数组并提示

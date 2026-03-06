@@ -1187,10 +1187,13 @@ body {
 /* 搜索框 */
 .gallery-search {
     margin-bottom: 30px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
 }
 
 .gallery-search input {
-    width: 100%;
+    flex: 1;
     padding: 12px 20px;
     border: 2px solid #e0e0e0;
     border-radius: 25px;
@@ -1201,6 +1204,34 @@ body {
 .gallery-search input:focus {
     outline: none;
     border-color: var(--primary);
+}
+
+/* 添加按钮 */
+.btn-add {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.btn-add:hover {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, #2e7d32 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.btn-add:active {
+    transform: translateY(0);
 }
 
 /* 卡片网格 */
@@ -1227,16 +1258,24 @@ body {
 }
 
 .gallery-card-image {
-    height: 140px;
+    height: 120px;
     background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
 }
 
 .gallery-card-emoji {
     font-size: 60px;
+}
+
+.gallery-card-emoji img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .gallery-card-status {
@@ -1399,6 +1438,13 @@ body {
     justify-content: center;
     font-size: 50px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.gallery-detail-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .gallery-detail-title h2 {
@@ -1536,4 +1582,154 @@ body {
     .gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     }
+    
+    .gallery-search {
+        flex-direction: column;
+    }
+    
+    .gallery-search input {
+        width: 100%;
+    }
+}
+
+/* 操作按钮 */
+.gallery-detail-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.gallery-detail-actions .btn-edit,
+.gallery-detail-actions .btn-delete {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.gallery-detail-actions .btn-edit {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+}
+
+.gallery-detail-actions .btn-edit:hover {
+    background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.gallery-detail-actions .btn-delete {
+    background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+    color: white;
+}
+
+.gallery-detail-actions .btn-delete:hover {
+    background: linear-gradient(135deg, #e53935 0%, #d32f2f 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
+/* 空状态 */
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 16px;
+}
+
+/* 表单样式 */
+.animal-form {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.animal-form .form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.animal-form .form-row .form-group {
+    flex: 1;
+}
+
+.animal-form .form-group {
+    margin-bottom: 15px;
+}
+
+.animal-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.animal-form input[type="text"],
+.animal-form select,
+.animal-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.animal-form input:focus,
+.animal-form select:focus,
+.animal-form textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.animal-form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.animal-form .checkbox-group,
+.animal-form .radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.animal-form .checkbox-group label,
+.animal-form .radio-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.animal-form .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.animal-form .btn-submit:hover {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, #2e7d32 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
 }

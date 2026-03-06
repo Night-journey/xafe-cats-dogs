@@ -230,6 +230,55 @@ const GALLERY_DATA = [
     }
 ];
 
+// ==================== 猫狗图鉴数据管理 ====================
+
+// 从 localStorage 获取图鉴数据
+function getGalleryData() {
+    try {
+        const stored = localStorage.getItem('xafeGalleryData');
+        if (stored) {
+            return JSON.parse(stored);
+        }
+    } catch (e) {}
+    
+    // 保存默认数据到 localStorage
+    try {
+        localStorage.setItem('xafeGalleryData', JSON.stringify(GALLERY_DATA));
+    } catch (e) {}
+    
+    return GALLERY_DATA;
+}
+
+// 保存图鉴数据
+function saveGalleryData(data) {
+    try {
+        localStorage.setItem('xafeGalleryData', JSON.stringify(data));
+    } catch (e) {}
+}
+
+// 添加动物
+function addAnimal(animalData) {
+    fetch('/api/animals', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(animalData)
+    }).then(() => { location.reload(); });
+}
+
+// 更新动物
+function updateAnimal(id, animalData) {
+    fetch('/api/animals/' + id, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(animalData)
+    }).then(() => { location.reload(); });
+}
+
+// 删除动物
+function deleteAnimal(id) {
+    fetch('/api/animals/' + id, {method: 'DELETE'}).then(() => { location.reload(); });
+}
+
 // 状态映射
 const STATUS_MAP = {
     'active': { text: '在校活跃', class: 'status-active', emoji: '✅' },
